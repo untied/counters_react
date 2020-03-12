@@ -7,15 +7,15 @@ import { LogEntryComponent } from './log-entry/log-entry.component';
 
 import './log-container.style.sass';
 
-// эффект монтирования компонента, выполняется только один раз
+// mount effect
 const useMountEffect = (fn: () => void) => useEffect(fn, []);
 
 
 export const LogContainerComponent: React.FC = () => {
-    // забираем состояние и диспетчера из контекста
+    // get state and dispatch method from the context
     const { state, dispatch } = useContext(LogStorageContext);
 
-    // пришло новое событие для записи в лог
+    // got a new event to write in the log
     const onLogEntry = (data: any): void => {
         if (dispatch) {
             dispatch(
@@ -28,14 +28,14 @@ export const LogContainerComponent: React.FC = () => {
         }
     };
 
-    // пришло новое событие для очистки лога
+    // got a new event to reset the log
     const onLogFlush = (): void => {
         if (dispatch) {
             dispatch(flush());
         }
-    }
+    };
 
-    // подписка на события
+    // subscribe on events
     useMountEffect(() => {
         rxEventBus.subscribe('log-entry', onLogEntry);
         rxEventBus.subscribe('reset-click', onLogFlush);
@@ -43,19 +43,17 @@ export const LogContainerComponent: React.FC = () => {
 
     return (
         <section>
-            <div className="log-container__header">Лог событий / Записей: {state.logEntries.length}</div>
+            <div className="log-container__header">Event Log / Number of Records: {state.logEntries.length}</div>
             <div className="log-container__body">
                 {
-                    state.logEntries.map((logEntry: ILogEntry, index: number) => {
-                        return (
-                            <LogEntryComponent
-                                position={logEntry.position}
-                                logTime={logEntry.logTime}
-                                clickTime={logEntry.clickTime}
-                                key={index + 1}
-                            />
-                        );
-                    })
+                    state.logEntries.map((logEntry: ILogEntry, index: number) => (
+                        <LogEntryComponent
+                            position={logEntry.position}
+                            logTime={logEntry.logTime}
+                            clickTime={logEntry.clickTime}
+                            key={index + 1}
+                        />
+                    ))
                 }
             </div>
         </section>

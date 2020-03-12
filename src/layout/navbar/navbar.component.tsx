@@ -9,7 +9,7 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { rxEventBus } from '../../common/rxeventbus';
 
 export const NavbarComponent: React.FC = () => {
-    // уведомить все компоненты о сбросе
+    // notify all components about reset
     const reset = () => {
         rxEventBus.publish('reset-click');
     };
@@ -17,12 +17,12 @@ export const NavbarComponent: React.FC = () => {
     return (
         <Navbar bg="info" variant="dark" fixed="top" className="justify-content-between">
             <Navbar.Brand href="#!">
-                <FontAwesomeIcon icon={faClock} size="lg" fixedWidth /> КНОПКИ-СЧЕТЧИКИ
+                <FontAwesomeIcon icon={faClock} size="lg" fixedWidth /> PRESS A BUTTON &mdash; OBTAIN A RESULT
             </Navbar.Brand>
             <Nav>
                 <Nav.Item>
                     <Nav.Link eventKey="reset" onClick={reset}>
-                        <FontAwesomeIcon icon={faTimes} size="sm" /> Сброс
+                        <FontAwesomeIcon icon={faTimes} size="sm" /> Reset
                     </Nav.Link>
                 </Nav.Item>
             </Nav>

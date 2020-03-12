@@ -1,43 +1,43 @@
 import { createContext } from 'react';
 
-// множество вариантов для действия с логом
+// enum of action types
 export enum LogActionType {
     ADD,
     FLUSH
 }
 
-// действие с логом
+// single log action
 export interface ILogAction {
     logEntry? : ILogEntry,
     type      : LogActionType
 }
 
-// одна запись в логе
+// single log record
 export interface ILogEntry {
     position  : number;
     clickTime : Date;
     logTime   : Date;
 }
 
-// состояние лога: список записей
+// log state: the list of log records
 export interface ILogState {
     logEntries: ILogEntry[];
 }
 
-// исходное состояние лога: пустой список
+// initial log state: an empty list
 export const initialState: ILogState = {
     logEntries: []
 };
 
-// редьюсер
+// just the reducer
 export const reducer = (state: ILogState = initialState, action: ILogAction): ILogState => {
     switch(action.type) {
-        // добавление новой записи в лог
+        // add a new record to log
         case LogActionType.ADD:
             return action.logEntry ? {
                 logEntries: [action.logEntry, ...state.logEntries]
             } : state;
-        // очистка лога
+        // flush the log
         case LogActionType.FLUSH:
             return {
                 logEntries: []
@@ -47,19 +47,19 @@ export const reducer = (state: ILogState = initialState, action: ILogAction): IL
     }
 }
 
-// добавление записи в лог
+// add a new record to log
 export const add = (logEntry: ILogEntry): ILogAction => ({ type: LogActionType.ADD, logEntry })
 
-// очистка лога
+// flush the log
 export const flush = (): ILogAction => ({ type: LogActionType.FLUSH })
 
-// интерфейс для представления того, что есть в контексте
+// interface to describe the context content
 interface ILogStorageContext {
     dispatch? : React.Dispatch<ILogAction>,
     state     : ILogState
 }
 
-// создаем сам контекст
+// create the  context instance
 export const LogStorageContext = createContext({
     state: initialState
 } as ILogStorageContext);

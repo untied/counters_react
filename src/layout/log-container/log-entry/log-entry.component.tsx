@@ -13,7 +13,7 @@ export interface ILogEntryProps {
 export const LogEntryComponent: React.FC<ILogEntryProps> = (props: ILogEntryProps) => {
     let variant: any;
 
-    // выбор варианта отображения номера нажатой кнопки
+    // select a variant to display the button pressed
     switch (props.position) {
         case 1:
             variant = 'success';
@@ -34,10 +34,10 @@ export const LogEntryComponent: React.FC<ILogEntryProps> = (props: ILogEntryProp
                 <Moment format="HH:mm:ss.SSS">{props.logTime}</Moment>
             </div>
             <div className="log-entry__description">
-                <Badge variant={variant}>Нажата кнопка #{props.position}</Badge>
+                <Badge variant={variant}>Pressed button #{props.position}</Badge>
             </div>
             <div className="log-entry__click-time">
-                время клика:
+                click time:
                 &nbsp;
                 <span>
                     <Moment format="HH:mm:ss.SSS">{props.clickTime}</Moment>

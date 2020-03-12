@@ -14,7 +14,7 @@ export interface IButtonProps {
 }
 
 export const ButtonComponent: React.FC<IButtonProps> = (props: IButtonProps) => {
-    // нажатие на кнопку
+    // button click event
     const buttonClick: () => void = () => {
         rxEventBus.publish('button-click', {
             position: props.position,

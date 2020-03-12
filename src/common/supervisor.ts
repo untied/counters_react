@@ -1,6 +1,6 @@
 import { rxEventBus } from './rxeventbus';
 
-// возможные состояния задачи
+// enum of possible task state
 enum State {
     UNKNOWN,
     RUNNING,
@@ -8,47 +8,47 @@ enum State {
     STOPPED
 }
 
-// задача
+// class to represent a single task
 class Task {
-    // текущее состояние действия
+    // current task state
     private __state: State = State.UNKNOWN;
 
-    // хэндлер таймаута
+    // timeout handler
     private __timeout: any = null;
 
-    // конструктор
+    // just the constructor
     public constructor(
-        private __position   : number,    // номер кнопки
-        private __datetime   : Date,      // дата и время нажатия
-        private __supervisor : Supervisor // супервизор
+        private __position   : number,    // button number
+        private __datetime   : Date,      // click date and time
+        private __supervisor : Supervisor // task supervisor
     ) {
     }
 
-    // геттер возвращает номер кнопки
+    // button number getter
     public get position(): number {
         return this.__position;
     }
 
-    // геттер возвращает дату и время нажатия
+    // click date and time getter
     public get datetime(): Date {
         return this.__datetime;
     }
 
-    // геттер возвращает текущее состояние действия
+    // current task state getter
     public get state(): State {
         return this.__state;
     }
 
-    // запуск действия
+    // start the task execution
     public start(): void {
         this.__state   = State.RUNNING;
         this.__timeout = window.setTimeout(() => {
             this.__state = State.SUCCESS;
-            this.__supervisor.next(); // уведомить супервайзор
+            this.__supervisor.next(); // notify the supervisor
         }, this.__position * 1000);
     }
 
-    // принудительный останов
+    // stop the task immediatelly
     public stop(): void {
         window.clearTimeout(this.__timeout);
         this.__timeout = null;
@@ -56,32 +56,32 @@ class Task {
     }
 }
 
-// супервайзор задач
+// task supervisor
 class Supervisor {
-    // очередь задач
+    // task queue
     private tasks: Task[];
 
-    // конструктор
+    // just the constructor
     public constructor() {
         this.tasks = [];
     }
 
-    // инициализация
+    // initialization
     public init(): void {
         rxEventBus.subscribe('button-click', this.onButtonPressed.bind(this));
         rxEventBus.subscribe('reset-click',  this.onResetPressed.bind(this));
     }
 
-    // выполнение следующей задачи из очереди
+    // get the next task from queue and execute it
     public next(): void {
         if (this.tasks.length !== 0) {
             const task: Task = this.tasks[0];
             switch (task.state) {
-                case State.UNKNOWN: // запустить следующую задачу на выполнение
+                case State.UNKNOWN: // start the next task
                     task.start();
                     break;
-                case State.SUCCESS: // удалить готовую задачу и запустить следующую
-                    // отправка сообщения в компонент лога
+                case State.SUCCESS: // remove the ready task and start the next one
+                    // send the message to log
                     rxEventBus.publish('log-entry', {
                         position  : task.position,
                         clickTime : task.datetime,
@@ -93,18 +93,18 @@ class Supervisor {
                     }
                     break;
                 default:
-                    // nothing
+                    // Nothing!
             }
         }
     }
 
-    // callback на нажатие кнопки
+    // button click callback
     private onButtonPressed(data: any): void {
         this.tasks.push(new Task(data.position, data.datetime, this));
         this.next();
     }
 
-    // callback на нажатие сброса
+    // reset click callback
     private onResetPressed(): void {
         this.tasks.forEach((t: Task): void => {
             t.stop();
@@ -113,4 +113,5 @@ class Supervisor {
     }
 }
 
+// export the supervisor instance
 export const supervisor: Supervisor = new Supervisor();

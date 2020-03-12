@@ -1,48 +1,48 @@
 import { Subject } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-// интерфейс отписки от событий
+// event subscription interface
 export interface RxSubscription {
     unsubscribe(): void;
 }
 
-// класс 'Событие'
+// class to represent a single event
 export class RxEvent {
-    private _key: string|null = null;
-    private _val: any         = null;
+    private __key: string|null = null;
+    private __val: any         = null;
 
-    // конструктор
+    // just the constructor
     constructor(key : string, val? : any) {
-        this._key = key;
-        this._val = val ? val : null;
+        this.__key = key;
+        this.__val = val ? val : null;
     }
 
-    // геттер свойства 'key'
+    // key property getter
     public get key(): string|null {
-        return this._key;
+        return this.__key;
     }
 
-    // сеттер свойства 'key'
-    public set key(_key: string|null) {
-        this._key = _key;
+    // key property setter
+    public set key(__key: string | null) {
+        this.__key = __key;
     }
 
-    // геттер свойства 'val'
+    // value property getter
     public get val(): any {
-        return this._val;
+        return this.__val;
     }
 
-    // сеттер свойства 'val'
-    public set val(_val: any) {
-        this._val = _val
+    // value property setter
+    public set val(__val: any) {
+        this.__val = __val
     }
 }
 
-// класс 'Шина событий'
+// class to represent an event bus
 export class RxEventBus {
     private subject = new Subject<RxEvent>();
 
-    // подписка
+    // subscribe on events method
     public subscribe(key: string, action: any): RxSubscription {
         return this.subject
             .pipe(
@@ -52,11 +52,11 @@ export class RxEventBus {
             .subscribe(action);
     }
 
-    // публикация события
+    // publish an event method
     public publish(key: string, value?: any): void {
         this.subject.next(new RxEvent(key, value));
     }
 }
 
-// экспорт экземпляра класса
+// export the event bus instance
 export const rxEventBus = new RxEventBus();
