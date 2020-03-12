@@ -12,7 +12,7 @@ The project demonstrates these front-end development advantages:
 * Usage of RxJS
 * Usage of storages and contexts
 
-If you want to try &mdash; just clone it and then:
+If you want to try &ndash; just clone it and then:
 
 ```
 ~/$ cd counters_react
